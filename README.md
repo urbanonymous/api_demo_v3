@@ -11,6 +11,8 @@ The portal displays the current orders, ticker, balances from an account.
 The data is updated by websocket from the website to the internal API.
 The internal API is connected to Binance by websocket to get realtime price information.
 
+The web is made with Tailwind CSS and daisyUI
+
 Internally, the API uses FastAPI, jinja2, websockets and aiohttp.
 
 When the API starts, it executes a cleanup, closing all the open orders in the testnet.

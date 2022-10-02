@@ -40,5 +40,4 @@ deploy: ## Start a docker instance with docker-compose.
 	${DC} up -d server
 
 .PHONY: retry
-retry: ## Full restart
-	build develop attach ## Full restart
+retry: build develop attach
