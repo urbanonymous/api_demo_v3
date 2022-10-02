@@ -1,0 +1,58 @@
+version: '3.9'
+
+services:
+  development:
+    image: ${COMPONENT:-demo-api}_development:${ENVIRONMENT:-local}
+    env_file:
+      - local.env
+    ports:
+      - "9001:8080"
+    entrypoint: ["python", "-m", "src.main"]
+    stdin_open: true
+    tty: true
+
+  server:
+    image: ${COMPONENT:-demo-api}:${ENVIRONMENT:-local}
+    networks:
+      traefik-public:
+
+    environment:
+      HOST: 0.0.0.0
+      PORT: 80
+      ENVIRONMENT: ${ENVIRONMENT}
+      
+    entrypoint: ["python", "-m", "src.main"]
+
+  black:
+    image: ${COMPONENT:-demo-api}_development:${ENVIRONMENT:-local}
+    env_file:
+      - local.env
+    entrypoint: ["black"]
+
+  flake8:
+    image: ${COMPONENT:-demo-api}_development:${ENVIRONMENT:-local}
+    env_file:
+      - local.env
+    entrypoint: ["flake8"]
+
+  isort:
+    image: ${COMPONENT:-demo-api}_development:${ENVIRONMENT:-local}
+    env_file:
+      - local.env
+    entrypoint: ["isort"]
+
+  mypy:
+    image: ${COMPONENT:-demo-api}_development:${ENVIRONMENT:-local}
+    env_file:
+      - local.env
+    entrypoint: ["mypy"]
+
+  unit_test:
+    image: ${COMPONENT:-demo-api}_development:${ENVIRONMENT:-local}
+    env_file:
+      - local.env
+    entrypoint: ["bash","/srv/app/scripts/unit-test.sh"]
+
+networks:
+  traefik-public:
+    external: true

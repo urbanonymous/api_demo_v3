@@ -1,0 +1,34 @@
+# This is a basic workflow to help you get started with Actions
+
+name: pro CD
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the pre branch
+on:
+  push:
+    branches: 
+      - pro
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "cd"
+  cd:
+    # The type of runner that the job will run on
+    runs-on: [pro]
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      # Execute build script
+      - name: Building images
+        run: make build
+        env:
+          ENVIRONMENT: pro
+
+      # Execute deploy script
+      - name: Deploying environment
+        env:
+          ENVIRONMENT: pro
+        run: make deploy
