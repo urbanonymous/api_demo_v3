@@ -13,9 +13,6 @@ services:
 
   server:
     image: ${COMPONENT:-demo-api}:${ENVIRONMENT:-local}
-    networks:
-      traefik-public:
-
     environment:
       HOST: 0.0.0.0
       PORT: 80
@@ -52,7 +49,3 @@ services:
     env_file:
       - local.env
     entrypoint: ["bash","/srv/app/scripts/unit-test.sh"]
-
-networks:
-  traefik-public:
-    external: true

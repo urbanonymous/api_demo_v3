@@ -215,12 +215,12 @@
 
         function update_ticker(event) {
             console.log("Updating tickers")
-            let { symbol, price } = event
+            let { symbol_id, price } = event
             var target = false
             // Ugly code here :D
-            if (symbol == "BTCUSD"){
+            if (symbol_id == "BTCUSD"){
                 var target = "btcusd-ticker"
-            } else if (symbol == "BTCUSDT"){
+            } else if (symbol_id == "BTCUSDT"){
                 var target = "btcusdt-ticker"
             }
 

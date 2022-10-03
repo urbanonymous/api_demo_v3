@@ -20,6 +20,7 @@ with open(os.path.join(os.path.dirname(__file__), "../VERSION")) as f:
 class App(FastAPI):
     async def startup(self):
         asyncio.create_task(binance_ws_client.listen())
+        await liquidity_engine.async_init(binance_ws_client)
         asyncio.create_task(liquidity_engine.start())
 
     async def shutdown(self):

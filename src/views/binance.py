@@ -3,7 +3,7 @@ import logging
 
 from fastapi import APIRouter, WebSocket
 
-from src.models.binance import SymbolId
+from src.models.symbol import SymbolId
 from src.services import binance as service
 from src.utils.service_utils import handle_service_response
 from src.utils.ws_manager import get_ws_manager
