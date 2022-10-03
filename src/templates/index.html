@@ -10,163 +10,177 @@
 </head>
 
 <body>
-    <div class="flex flex-col w-full">
-        <div class="navbar bg-neutral text-neutral-content">
-            <div class="navbar-start">
-                <a class="btn btn-ghost normal-case text-xl">Demo API v3</a>
-            </div>
-            <div class="navbar-end">
-                <button class="btn btn-ghost btn-circle">
-                    <div class="indicator">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                        </svg>
-                        <span class="badge badge-xs badge-primary indicator-item"></span>
-                    </div>
-                </button>
-            </div>
-        </div>
-        <div class="grid grid-cols-2 gap-4">
-            <div>
-                <header class="bg-shadow shadow">
-                    <div class="mx-auto max-w-7xl py-6 px-4 sm:px-6 lg:px-8">
-                        <h1 class="text-3xl font-bold tracking-tight text-white-900">Tickers</h1>
-                    </div>
-                </header>
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="stats shadow">
+    <div class="min-h-screen flex flex-col">
+        <header>
+            <div class="navbar bg-neutral text-neutral-content">
+                <div class="navbar-start">
+                    <a class="btn btn-ghost normal-case text-xl">Demo API v3</a>
+                </div>
+                <div class="navbar-end">
+                    <button class="btn btn-ghost btn-circle">
+                        <div class="indicator">
 
-                        <div class="stat">
-                            <div class="stat-title">BTCUSDT</div>
-                            <div class="stat-value">21,400</div>
-                            <div class="stat-actions">
-                                <button class="btn btn-sm btn-error">Clear</button>
-                                <button class="btn btn-sm btn-info">Run</button>
-                            </div>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M8.288 15.038a5.25 5.25 0 017.424 0M5.106 11.856c3.807-3.808 9.98-3.808 13.788 0M1.924 8.674c5.565-5.565 14.587-5.565 20.152 0M12.53 18.22l-.53.53-.53-.53a.75.75 0 011.06 0z" />
+                            </svg>
+
+                            <span class="badge badge-xs badge-error indicator-item"></span>
                         </div>
-
-                    </div>
-                    <div class="stats shadow">
-
-                        <div class="stat">
-                            <div class="stat-title">BTCUSD</div>
-                            <div class="stat-value">21,300</div>
-                            <div class="stat-actions">
-                                <button class="btn btn-sm btn-error">Clear</button>
-                                <button class="btn btn-sm btn-info">Run</button>
-                            </div>
+                    </button>
+                </div>
+            </div>
+        </header>
+        <main class="flex flex-col items-center flex-grow">
+            <div class="grid grid-cols-3 gap-4 w-2/3">
+                <div class="col-span-2 bg-shadow shadow">
+                    <div>
+                        <div class="mx-auto py-6 px-4">
+                            <h1 class="text-3xl font-bold tracking-tight text-white-900">Tickers</h1>
                         </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="stats shadow">
 
+                            <div class="stat">
+                                <div class="stat-title">BTCUSDT</div>
+                                <div class="stat-value">21,400</div>
+                                <div class="stat-actions">
+                                    <button class="btn btn-sm btn-error">Clear</button>
+                                    <button class="btn btn-sm btn-info">Run</button>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="stats shadow">
+
+                            <div class="stat">
+                                <div class="stat-title">BTCUSD</div>
+                                <div class="stat-value">21,300</div>
+                                <div class="stat-actions">
+                                    <button class="btn btn-sm btn-error">Clear</button>
+                                    <button class="btn btn-sm btn-info">Run</button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-shadow shadow">
+                    <div>
+                        <div class="mx-auto py-6 px-4">
+                            <h1 class="text-3xl font-bold tracking-tight text-white-900">Balances</h1>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="table table-compact w-full">
+                            <thead>
+                                <tr>
+                                    <th>Asset</th>
+                                    <th>Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th>BTC</th>
+                                    <td>0.845655</td>
+                                </tr>
+                                <tr>
+                                    <th>USDT</th>
+                                    <td>10023.845655</td>
+                                </tr>
+                                <tr>
+                                    <th>USD</th>
+                                    <td>902.845655</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
-            <div>
-                <header class="bg-shadow shadow">
-                    <div class="mx-auto max-w-7xl py-6 px-4 sm:px-6 lg:px-8">
-                        <h1 class="text-3xl font-bold tracking-tight text-white-900">Balances</h1>
+            <div class="divider"></div>
+            <div class="flex flex-col w-2/3 bg-shadow shadow">
+                <div>
+                    <div class="mx-auto py-6 px-4">
+                        <h1 class="text-3xl font-bold tracking-tight text-white-900">Orders</h1>
                     </div>
-                </header>
-                <div class="overflow-x-auto">
-                    <table class="table table-compact w-full">
+                </div>
+                <div class="overflow-x-auto w-full">
+                    <table class="table w-full">
+                        <!-- head -->
                         <thead>
                             <tr>
-                                <th>Asset</th>
-                                <th>Amount</th>
+                            <tr>
+                                <th>Ticker</th>
+                                <th>Side</th>
+                                <th>Price</th>
+                                <th>Size</th>
+                            </tr>
                             </tr>
                         </thead>
                         <tbody>
+                            <!-- row 1 -->
                             <tr>
-                                <th>BTC</th>
-                                <td>0.845655</td>
+                                <th>
+                                    BTCUSDT
+                                </th>
+                                <td>
+                                    SELL
+                                </td>
+                                <td>
+                                    10200.52
+                                </td>
+                                <td>0.05</td>
                             </tr>
+                            <!-- row 2 -->
                             <tr>
-                                <th>USDT</th>
-                                <td>10023.845655</td>
-                            </tr>
-                            <tr>
-                                <th>USD</th>
-                                <td>902.845655</td>
+                                <th>
+                                    BTCUSDT
+                                </th>
+                                <td>
+                                    BUY
+                                </td>
+                                <td>
+                                    10200.52
+                                </td>
+                                <td>0.05</td>
                             </tr>
                         </tbody>
+                        <!-- foot -->
+                        <tfoot>
+                            <tr>
+                                <th>Ticker</th>
+                                <th>Side</th>
+                                <th>Price</th>
+                                <th>Size</th>
+                            </tr>
+                        </tfoot>
+
                     </table>
                 </div>
             </div>
-        </div>
-        <div class="divider"></div>
-        <header class="bg-shadow shadow">
-            <div class="mx-auto max-w-7xl py-6 px-4 sm:px-6 lg:px-8">
-                <h1 class="text-3xl font-bold tracking-tight text-white-900">Orders</h1>
-            </div>
-        </header>
-        <div class="overflow-x-auto w-full">
-            <table class="table w-full">
-                <!-- head -->
-                <thead>
-                    <tr>
-                    <tr>
-                        <th>Ticker</th>
-                        <th>Side</th>
-                        <th>Price</th>
-                        <th>Size</th>
-                    </tr>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- row 1 -->
-                    <tr>
-                        <th>
-                            BTCUSDT
-                        </th>
-                        <td>
-                            SELL
-                        </td>
-                        <td>
-                            10200.52
-                        </td>
-                        <td>0.05</td>
-                    </tr>
-                    <!-- row 2 -->
-                    <tr>
-                        <th>
-                            BTCUSDT
-                        </th>
-                        <td>
-                            BUY
-                        </td>
-                        <td>
-                            10200.52
-                        </td>
-                        <td>0.05</td>
-                    </tr>
-                </tbody>
-                <!-- foot -->
-                <tfoot>
-                    <tr>
-                        <th>Ticker</th>
-                        <th>Side</th>
-                        <th>Price</th>
-                        <th>Size</th>
-                    </tr>
-                </tfoot>
-
-            </table>
-        </div>
-        <div class="toast">
-            <div class="alert alert-info">
-                <div>
-                    <span>New order generated</span>
+            <div class="toast">
+                <div class="alert alert-info">
+                    <div>
+                        <span>New order generated</span>
+                    </div>
                 </div>
             </div>
-        </div>
-        <br>
+        </main>
         <footer class="footer footer-center p-4 bg-base-300 text-base-content">
             <div>
                 <p>Made by Urbano</p>
             </div>
         </footer>
     </div>
+
+    <script>
+        var ws = new WebSocket("ws://localhost:9001/ws");
+        ws.onmessage = function (event) {
+            console.log(event)
+        };
+    </script>
 </body>
 
 </html>

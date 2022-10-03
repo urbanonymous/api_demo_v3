@@ -480,6 +480,14 @@ h11 = ">=0.8"
 standard = ["colorama (>=0.4)", "httptools (>=0.4.0)", "python-dotenv (>=0.13)", "pyyaml (>=5.1)", "uvloop (>=0.14.0,!=0.15.0,!=0.15.1)", "watchfiles (>=0.13)", "websockets (>=10.0)"]
 
 [[package]]
+name = "websockets"
+version = "10.3"
+description = "An implementation of the WebSocket Protocol (RFC 6455 & 7692)"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[[package]]
 name = "yarl"
 version = "1.8.1"
 description = "Yet another URL library"
@@ -494,7 +502,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "cc2a6222ec2295172c482ad59024acfcaf273411779f7c5543885ab0ccce7417"
+content-hash = "3f4f40d343a27345a66fd4ae81a849baa6ec107ddbda074131a4f8a153cf501c"
 
 [metadata.files]
 aiohttp = []
@@ -611,4 +619,5 @@ tomli = [
 ]
 typing-extensions = []
 uvicorn = []
+websockets = []
 yarl = []
