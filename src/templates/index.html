@@ -26,14 +26,14 @@
                                     d="M8.288 15.038a5.25 5.25 0 017.424 0M5.106 11.856c3.807-3.808 9.98-3.808 13.788 0M1.924 8.674c5.565-5.565 14.587-5.565 20.152 0M12.53 18.22l-.53.53-.53-.53a.75.75 0 011.06 0z" />
                             </svg>
 
-                            <span class="badge badge-xs badge-error indicator-item"></span>
+                            <span id="connection-indicator" class="badge badge-xs badge-error indicator-item"></span>
                         </div>
                     </button>
                 </div>
             </div>
         </header>
         <main class="flex flex-col items-center flex-grow">
-            <div class="grid grid-cols-3 gap-4 w-2/3">
+            <div class="grid grid-cols-3 gap-4 w-4/5">
                 <div class="col-span-2 bg-shadow shadow">
                     <div>
                         <div class="mx-auto py-6 px-4">
@@ -45,7 +45,7 @@
 
                             <div class="stat">
                                 <div class="stat-title">BTCUSDT</div>
-                                <div class="stat-value">21,400</div>
+                                <div id="btcusdt-ticker" class="stat-value">21,400</div>
                                 <div class="stat-actions">
                                     <button class="btn btn-sm btn-error">Clear</button>
                                     <button class="btn btn-sm btn-info">Run</button>
@@ -57,7 +57,7 @@
 
                             <div class="stat">
                                 <div class="stat-title">BTCUSD</div>
-                                <div class="stat-value">21,300</div>
+                                <div id="btcusd-ticker" class="stat-value">21,300</div>
                                 <div class="stat-actions">
                                     <button class="btn btn-sm btn-error">Clear</button>
                                     <button class="btn btn-sm btn-info">Run</button>
@@ -78,21 +78,25 @@
                             <thead>
                                 <tr>
                                     <th>Asset</th>
-                                    <th>Amount</th>
+                                    <th>Free</th>
+                                    <th>Locked</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
                                     <th>BTC</th>
                                     <td>0.845655</td>
+                                    <td>0</td>
                                 </tr>
                                 <tr>
                                     <th>USDT</th>
                                     <td>10023.845655</td>
+                                    <td>0</td>
                                 </tr>
                                 <tr>
                                     <th>USD</th>
                                     <td>902.845655</td>
+                                    <td>0</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -100,7 +104,7 @@
                 </div>
             </div>
             <div class="divider"></div>
-            <div class="flex flex-col w-2/3 bg-shadow shadow">
+            <div class="flex flex-col w-4/5 bg-shadow shadow">
                 <div>
                     <div class="mx-auto py-6 px-4">
                         <h1 class="text-3xl font-bold tracking-tight text-white-900">Orders</h1>
@@ -160,12 +164,7 @@
                     </table>
                 </div>
             </div>
-            <div class="toast">
-                <div class="alert alert-info">
-                    <div>
-                        <span>New order generated</span>
-                    </div>
-                </div>
+            <div id="toast" class="toast">
             </div>
         </main>
         <footer class="footer footer-center p-4 bg-base-300 text-base-content">
@@ -176,10 +175,76 @@
     </div>
 
     <script>
-        var ws = new WebSocket("ws://localhost:9001/ws");
-        ws.onmessage = function (event) {
-            console.log(event)
-        };
+        // TODO: Load the script from public folder
+        function handle_event(event) {
+            // Ugly code here, can be improve with a dict/map 
+            if (event.event_type == 'ticker'){
+                update_ticker(event)
+            }
+        }
+
+        window.addEventListener("DOMContentLoaded", () => {
+            var ws = new WebSocket("ws://localhost:9001/ws")
+
+            ws.onmessage = function (event) {
+                try {
+                    handle_event(JSON.parse(event.data))
+                } catch (e) {
+                    console.log(e)
+                }
+            };
+
+            setTimeout(function () {
+                if (ws.readyState !== WebSocket.CLOSED) {
+                    document.getElementById("connection-indicator").classList.add('badge-success');
+                    document.getElementById("connection-indicator").classList.remove('badge-error');
+                }
+                addToast("Websocket connection established")
+            }, 1000);
+
+        })
+
+        function update_balances(data) {
+            console.log("Updating balances")
+        }
+
+        function update_orders(data) {
+            console.log("Updating orders")
+
+        }
+
+        function update_ticker(event) {
+            console.log("Updating tickers")
+            let { symbol, price } = event
+            var target = false
+            // Ugly code here :D
+            if (symbol == "BTCUSD"){
+                var target = "btcusd-ticker"
+            } else if (symbol == "BTCUSDT"){
+                var target = "btcusdt-ticker"
+            }
+
+            if (target){
+                document.getElementById(target).innerHTML = (Math.round(parseFloat(price) * 100) / 100).toFixed(2)
+            }
+            
+        }
+
+        function generateId() {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        }
+
+        function addToast(message) {
+            var toast = document.getElementById("toast")
+            var newAlert = document.createElement("div")
+            newAlert.innerHTML = `<div class='alert alert-info'><div><span>${message}</span></div></div>`
+            toast.appendChild(newAlert)
+            setTimeout(function () {
+                toast.removeChild(newAlert);
+            }, 4000);
+        }
     </script>
 </body>
 

@@ -17,6 +17,8 @@ Internally, the API uses FastAPI, jinja2, websockets and aiohttp.
 
 When the API starts, it executes a cleanup, closing all the open orders in the testnet.
 
+The app is hardcoded to use only BTC, USD and USDT.
+
 ## Requirements
 
 - Linux/osx machine (for the makefiles)

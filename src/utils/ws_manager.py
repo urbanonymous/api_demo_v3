@@ -15,26 +15,31 @@ class WSManager:
 
     async def disconnect(self, websocket: WebSocket):
         if websocket in self.active_connections:
+            try:
+                await websocket.close()
+            except Exception:
+                pass
             self.active_connections.remove(websocket)
 
     async def send_data(self, websocket: WebSocket, data: dict):
         if not isinstance(data, dict):
             raise TypeError("data must be a dict")
 
-        await websocket.send_json(
-            data={"data": data},
-            mode="text",
-        )
+        await websocket.send_json(data=data)
+        logger.info(f"Sent data to client >>> {data}")
 
     async def broadcast(self, data: dict):
+        logger.info(f"Broadcasting data to clients:")
         for connection in self.active_connections:
             try:
                 await self.send_data(connection, data)
+            except RuntimeError:
+                await self.disconnect(connection)
             except Exception as e:
                 logger.exception(e)
 
     @asynccontextmanager
-    async def create_session(self, websocket: WebSocket):
+    async def add_connection(self, websocket: WebSocket):
         try:
             self.active_connections.append(websocket)
             yield websocket
