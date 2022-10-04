@@ -45,7 +45,7 @@
 
                             <div class="stat">
                                 <div class="stat-title">BTCUSDT</div>
-                                <div id="btcusdt-ticker" class="stat-value">21,400</div>
+                                <div id="btcusdt-ticker" class="stat-value"></div>
                                 <div class="stat-actions">
                                     <button class="btn btn-sm btn-error">Clear</button>
                                     <button class="btn btn-sm btn-info">Run</button>
@@ -56,8 +56,8 @@
                         <div class="stats shadow">
 
                             <div class="stat">
-                                <div class="stat-title">BTCUSD</div>
-                                <div id="btcusd-ticker" class="stat-value">21,300</div>
+                                <div class="stat-title">BTCBUSD</div>
+                                <div id="btcbusd-ticker" class="stat-value"></div>
                                 <div class="stat-actions">
                                     <button class="btn btn-sm btn-error">Clear</button>
                                     <button class="btn btn-sm btn-info">Run</button>
@@ -83,21 +83,13 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                {% for balance in balances %}
                                 <tr>
-                                    <th>BTC</th>
-                                    <td>0.845655</td>
-                                    <td>0</td>
+                                    <th>{{ balance["asset"] }}</th>
+                                    <td>{{ balance["free"] }}</td>
+                                    <td>{{ balance["locked"] }}</td>
                                 </tr>
-                                <tr>
-                                    <th>USDT</th>
-                                    <td>10023.845655</td>
-                                    <td>0</td>
-                                </tr>
-                                <tr>
-                                    <th>USD</th>
-                                    <td>902.845655</td>
-                                    <td>0</td>
-                                </tr>
+                                {% endfor %}
                             </tbody>
                         </table>
                     </div>
@@ -111,7 +103,7 @@
                     </div>
                 </div>
                 <div class="overflow-x-auto w-full">
-                    <table class="table w-full">
+                    <table id="orders-table" class="table w-full">
                         <!-- head -->
                         <thead>
                             <tr>
@@ -124,43 +116,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- row 1 -->
-                            <tr>
-                                <th>
-                                    BTCUSDT
-                                </th>
-                                <td>
-                                    SELL
-                                </td>
-                                <td>
-                                    10200.52
-                                </td>
-                                <td>0.05</td>
-                            </tr>
-                            <!-- row 2 -->
-                            <tr>
-                                <th>
-                                    BTCUSDT
-                                </th>
-                                <td>
-                                    BUY
-                                </td>
-                                <td>
-                                    10200.52
-                                </td>
-                                <td>0.05</td>
-                            </tr>
                         </tbody>
-                        <!-- foot -->
-                        <tfoot>
-                            <tr>
-                                <th>Ticker</th>
-                                <th>Side</th>
-                                <th>Price</th>
-                                <th>Size</th>
-                            </tr>
-                        </tfoot>
-
                     </table>
                 </div>
             </div>
@@ -218,8 +174,8 @@
             let { symbol_id, price } = event
             var target = false
             // Ugly code here :D
-            if (symbol_id == "BTCUSD"){
-                var target = "btcusd-ticker"
+            if (symbol_id == "BTCBUSD"){
+                var target = "btcbusd-ticker"
             } else if (symbol_id == "BTCUSDT"){
                 var target = "btcusdt-ticker"
             }

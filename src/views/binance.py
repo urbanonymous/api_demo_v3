@@ -14,14 +14,14 @@ ws_manager = get_ws_manager()
 logger = logging.getLogger(__name__)
 
 
-@router.post("/symbol/{symbol_id}", name="health", status_code=200)
+@router.post("/symbol/{symbol_id}", name="enable symbol liquidity", status_code=200)
 async def enable_symbol_liquidity(symbol_id: SymbolId):
 
     async with handle_service_response():
         return await service.enable_symbol_liquidity(symbol_id=symbol_id)
 
 
-@router.delete("/symbol/{symbol_id}", name="health", status_code=200)
+@router.delete("/symbol/{symbol_id}", name="disable symbol liquidity", status_code=200)
 async def disable_ticker_liquidity(symbol_id: SymbolId):
     async with handle_service_response():
         return await service.disable_symbol_liquidity(symbol_id=symbol_id)

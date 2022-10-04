@@ -2,5 +2,5 @@ from enum import Enum
 
 
 class SymbolId(str, Enum):
-    BTCUSD = "btcusd"
+    BTCBUSD = "btcbusd"
     BTCUSDT = "btcusdt"

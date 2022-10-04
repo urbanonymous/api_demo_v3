@@ -2,7 +2,6 @@ import hashlib
 import hmac
 import logging
 import time
-import json
 
 import aiohttp
 
@@ -34,9 +33,13 @@ async def generate_signature(data: dict) -> str:
 
 
 async def get_tickers(symbols: list):
+    """Does multiple calls due to aiohttp forced list params"""
+    data = []
     async with aiohttp.ClientSession() as session:
-        async with session.get(f"{BASE_API_URL}/ticker/price?symbols={json.dumps(symbols)}") as response:
-            return await handle_response(response)
+        for symbol in symbols:
+            async with session.get(f"{BASE_API_URL}/ticker/price?symbol={symbol}") as response:
+                data.append(await handle_response(response))
+    return data
 
 
 async def create_order(order_data):
@@ -50,11 +53,11 @@ async def create_order(order_data):
 async def cancel_orders(symbol_id: str):
     data = {"symbol": symbol_id.upper(), "timestamp": int(time.time() * 1000)}
     async with aiohttp.ClientSession() as session:
-        async with session.post(f"{BASE_TESTNET_API_URL}/openOrders", headers=HEADERS, data=data) as response:
+        async with session.delete(f"{BASE_TESTNET_API_URL}/openOrders", headers=HEADERS, data=await generate_signature(data)) as response:
             return await handle_response(response)
 
 
-async def get_balances():
+async def get_account():
     async with aiohttp.ClientSession() as session:
         async with session.get(
             f"{BASE_TESTNET_API_URL}/account", headers=HEADERS, params= await generate_signature({})

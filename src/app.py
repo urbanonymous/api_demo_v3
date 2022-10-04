@@ -1,5 +1,6 @@
 import asyncio
 import os.path
+import logging
 from functools import lru_cache
 
 from fastapi import FastAPI
@@ -8,6 +9,8 @@ from src.routers import binance_router, health_router, templates_router
 from src.settings import get_settings
 from src.utils.binance_liquidity_engine import get_binance_liquidity_engine
 from src.utils.binance_ws_client import get_binance_ws_client
+
+logger = logging.getLogger(__name__)
 
 settings = get_settings()
 binance_ws_client = get_binance_ws_client()
@@ -24,6 +27,7 @@ class App(FastAPI):
         asyncio.create_task(liquidity_engine.start())
 
     async def shutdown(self):
+        logger.info("Shutting down")
         await liquidity_engine.stop()
         await binance_ws_client.stop()
 

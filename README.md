@@ -17,7 +17,12 @@ Internally, the API uses FastAPI, jinja2, websockets and aiohttp.
 
 When the API starts, it executes a cleanup, closing all the open orders in the testnet.
 
-The app is hardcoded to use only BTC, USD and USDT.
+The app is hardcoded to only use BTC, BUSD and USDT.
+
+## TODO
+
+- Account balances updated by websocket
+- Orders status updated by websocket
 
 ## Requirements
 
