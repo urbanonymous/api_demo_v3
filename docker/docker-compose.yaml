@@ -22,6 +22,7 @@ services:
       TESTNET_API_KEY: ${TESTNET_API_KEY}
       TESTNET_SECRET_KEY: ${TESTNET_SECRET_KEY}
       API_URL: "https://urbtools.com"
+      WS_URL: "ws://urbtools.com"
 
     entrypoint: ["python", "-m", "src.main"]
 
