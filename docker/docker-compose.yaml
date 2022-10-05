@@ -14,10 +14,10 @@ services:
   server:
     image: ${COMPONENT:-demo-api}:${ENVIRONMENT:-local}
     ports:
-      - "443:443"
+      - "80:80"
     environment:
       HOST: 0.0.0.0
-      PORT: 443
+      PORT: 80
       ENVIRONMENT: ${ENVIRONMENT}
       TESTNET_API_KEY: ${TESTNET_API_KEY}
       TESTNET_SECRET_KEY: ${TESTNET_SECRET_KEY}
