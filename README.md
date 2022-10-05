@@ -1,6 +1,6 @@
 # api_demo_v3
 
-This repo contains a webapp that provides liquidity to Binance trading pairs.
+This repo contains a web app that provides liquidity to Binance trading pairs.
 
 It connects to Binance's API to gather information related to some symbols, and then it creates buy and sell orders in the testnet of Binance based on some parameters.
 
@@ -8,14 +8,14 @@ The web displays the current orders, ticker, balances from an account.
 The tickers are updated once those are activated (run button) up to 2 times per second.
 
 The data is updated using websockets, from the website to the internal API.
-Only tickers and orders are updated for not. The balances are only updated on refresh.
+Only tickers and orders are updated for not. The balances are only updated on a refresh.
 
-The internal API is connected to Binance by websocket to get realtime price information.
+The internal API is connected to Binance by websocket to get real-time price information.
 It subscribes to some market symbols and then ingests the newest price to an internal liquidity engine.
 
 This liquidity engine basically checks if there are orders in place for a given symbol, if not, it creates a buy and sell order in the testnet of Binance.
 
-It also checks the trading pair price, and compares it to the orders places, to cancel and create new orders if necessary.
+It also checks the trading pair price, and compares it to the orders placed, to cancel and create new orders if necessary.
 
 All the pending orders for the trading pairs are cancelled/cleaned once the api is stopped and also on startup.
 
@@ -60,12 +60,12 @@ To build the docker image user `make build`
 
 Create a new file inside /docker with the name local.env and add the Binance testnet API keys. Follow the local.env.template.
  
-To start the api in development mode use `make develop`
+To start the API in development mode use `make develop`
 
 To attach to the running api use `make attach`
 When attached:
 - To detach use `control+d`
-- To stop the api use `control+c`
+- To stop the API use `control+c`
 
 To just watch the logs without being attached use `make logs`
 
@@ -77,4 +77,4 @@ To execute the tests use `make unit-test`
 
 To reformat the code use `make reformat`
 
-To check linting of the code use `make lint`
+To check the linting of the code use `make lint`
