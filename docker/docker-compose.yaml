@@ -14,7 +14,7 @@ services:
   server:
     image: ${COMPONENT:-demo-api}:${ENVIRONMENT:-local}
     ports:
-      - "443:8080"
+      - "443:80"
     environment:
       HOST: 0.0.0.0
       PORT: 80
