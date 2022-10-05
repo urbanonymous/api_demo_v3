@@ -45,7 +45,7 @@
 
                             <div class="stat">
                                 <div class="stat-title">BTCUSDT</div>
-                                <div id="btcusdt-ticker" class="stat-value">{{ tickers["BTCUSDT"] }}</div>
+                                <div id="btcusdtTicker" class="stat-value">{{ tickers["BTCUSDT"] }}</div>
                                 <div class="stat-actions">
                                     <button class="btn btn-sm btn-error"
                                         onclick="toogleSymbolLiquidity('BTCUSDT', false)">Clear</button>
@@ -59,7 +59,7 @@
 
                             <div class="stat">
                                 <div class="stat-title">BTCBUSD</div>
-                                <div id="btcbusd-ticker" class="stat-value">{{ tickers["BTCBUSD"] }}</div>
+                                <div id="btcbusdTicker" class="stat-value">{{ tickers["BTCBUSD"] }}</div>
                                 <div class="stat-actions">
                                     <button class="btn btn-sm btn-error"
                                         onclick="toogleSymbolLiquidity('BTCBUSD', false)">Clear</button>
@@ -107,12 +107,12 @@
                     </div>
                 </div>
                 <div class="overflow-x-auto w-full">
-                    <table id="orders-table" class="table w-full">
+                    <table id="ordersTable" class="table w-full">
                         <!-- head -->
                         <thead>
                             <tr>
                             <tr>
-                                <th>Ticker</th>
+                                <th>Symbol</th>
                                 <th>Side</th>
                                 <th>Price</th>
                                 <th>Size</th>
@@ -123,6 +123,7 @@
                         </tbody>
                     </table>
                 </div>
+                <br>
             </div>
             <div id="toast" class="toast">
             </div>
@@ -139,7 +140,11 @@
         function handle_event(event) {
             // Ugly code here, can be improve with a dict/map 
             if (event.event_type == 'ticker') {
-                update_ticker(event)
+                update_tickers(event)
+            } else if (event.event_type == 'orders') {
+                update_orders(event)
+            } else {
+                console.log('Warning: Unknown event type')
             }
         }
 
@@ -168,24 +173,39 @@
             console.log("Updating balances")
         }
 
-        function update_orders(data) {
+        function update_orders(event) {
             console.log("Updating orders")
+            const ordersTable = document.getElementById("ordersTable")
+            const ordersTableBody = ordersTable.getElementsByTagName("tbody")[0]
+            let {orders} = event
 
-        }
+            for (let order of orders) {
+                const row = document.createElement("tr")
+                
+                for (let dataType of ["symbol_id", "side", "price", "size"]) {
+                    const cell = document.createElement("td");
+                    const cellText = document.createTextNode(order[dataType]);
+                    cell.appendChild(cellText);
+                    row.appendChild(cell);
+                }
+                ordersTableBody.appendChild(row)
+            }
+        }               
 
-        function update_ticker(event) {
+
+        function update_tickers(event) {
             console.log("Updating tickers")
             let { symbol_id, price } = event
             var target = false
             // Ugly code here :D
             if (symbol_id == "BTCBUSD") {
-                var target = "btcbusd-ticker"
+                var target = "btcbusdTicker"
             } else if (symbol_id == "BTCUSDT") {
-                var target = "btcusdt-ticker"
+                var target = "btcusdtTicker"
             }
 
             if (target) {
-                document.getElementById(target).innerHTML = (Math.round(parseFloat(price) * 100) / 100).toFixed(2)
+                document.getElementById(target).createTextNode((Math.round(parseFloat(price) * 100) / 100).toFixed(2))
             }
 
         }

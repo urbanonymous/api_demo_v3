@@ -14,5 +14,6 @@ class Order(BaseModel):
     symbol_id: str = Field(alias='symbol')
     price: float 
     side: Side
+    size: float = Field(alias='origQty')
     order_id: str = Field(alias='orderId')
     order_type: str  = Field(alias='type') # Binance API doesn't specify all types in the enum
