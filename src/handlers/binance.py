@@ -24,7 +24,7 @@ async def handle_response(response):
     raise Exception(f"Response different than 200 status, {response.status}")
 
 
-async def generate_signature(data: dict) -> str:
+async def generate_signature(data: dict) -> dict:
     data["timestamp"] = int(time.time() * 1000)
     query_string = "&".join([f"{key}={value}" for key, value in data.items()])
     m = hmac.new(settings.testnet_secret_key.encode("utf-8"), query_string.encode("utf-8"), hashlib.sha256)

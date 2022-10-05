@@ -98,7 +98,7 @@ class BinanceLiquidityEngine(object):
         self._symbols[symbol_id]["orders"] = []
         try:
             await cancel_orders(symbol_id)
-        except Exception as e:
+        except Exception:
             logger.warning("Couldn't cancel orders")
 
         if not self._symbols[symbol_id]["price"]:
