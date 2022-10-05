@@ -58,6 +58,8 @@ Clone the repo in a linux/osx machine and execute the following commands:
 
 To build the docker image user `make build`
 
+Create a new file inside /docker with the name local.env and add the Binance testnet API keys. Follow the local.env.template.
+ 
 To start the api in development mode use `make develop`
 
 To attach to the running api use `make attach`
