@@ -48,7 +48,7 @@
                                 <div id="btcusdtTicker" class="stat-value">{{ tickers["BTCUSDT"] }}</div>
                                 <div class="stat-actions">
                                     <button class="btn btn-sm btn-error"
-                                        onclick="toogleSymbolLiquidity('BTCUSDT', false)">Clear</button>
+                                        onclick="toogleSymbolLiquidity('BTCUSDT', false)">Stop</button>
                                     <button class="btn btn-sm btn-info"
                                         onclick="toogleSymbolLiquidity('BTCUSDT', true)">Run</button>
                                 </div>
@@ -62,7 +62,7 @@
                                 <div id="btcbusdTicker" class="stat-value">{{ tickers["BTCBUSD"] }}</div>
                                 <div class="stat-actions">
                                     <button class="btn btn-sm btn-error"
-                                        onclick="toogleSymbolLiquidity('BTCBUSD', false)">Clear</button>
+                                        onclick="toogleSymbolLiquidity('BTCBUSD', false)">Stop</button>
                                     <button class="btn btn-sm btn-info"
                                         onclick="toogleSymbolLiquidity('BTCBUSD', true)">Run</button>
                                 </div>
@@ -143,6 +143,8 @@
                 update_tickers(event)
             } else if (event.event_type == 'orders') {
                 update_orders(event)
+            } else if (event.event_type == 'new_order') {
+                alert_order(event)
             } else {
                 console.log('Warning: Unknown event type')
             }
@@ -173,15 +175,22 @@
             console.log("Updating balances")
         }
 
+        function alert_order(event) {
+            console.log("New order")
+            let { symbol_id, side, size, price } = event
+            addToast(`New ${symbol_id} order: ${side}@${price} amount: ${size}`)
+        }
+
         function update_orders(event) {
             console.log("Updating orders")
             const ordersTable = document.getElementById("ordersTable")
             const ordersTableBody = ordersTable.getElementsByTagName("tbody")[0]
-            let {orders} = event
+            ordersTableBody.innerHTML = '';
+            let { orders } = event
 
             for (let order of orders) {
                 const row = document.createElement("tr")
-                
+
                 for (let dataType of ["symbol_id", "side", "price", "size"]) {
                     const cell = document.createElement("td");
                     const cellText = document.createTextNode(order[dataType]);
@@ -190,7 +199,7 @@
                 }
                 ordersTableBody.appendChild(row)
             }
-        }               
+        }
 
 
         function update_tickers(event) {
@@ -205,15 +214,9 @@
             }
 
             if (target) {
-                document.getElementById(target).createTextNode((Math.round(parseFloat(price) * 100) / 100).toFixed(2))
+                document.getElementById(target).innerHTML = (Math.round(parseFloat(price) * 100) / 100).toFixed(2)
             }
 
-        }
-
-        function generateId() {
-            return Math.floor((1 + Math.random()) * 0x10000)
-                .toString(16)
-                .substring(1);
         }
 
         function addToast(message) {
@@ -223,7 +226,7 @@
             toast.appendChild(newAlert)
             setTimeout(function () {
                 toast.removeChild(newAlert);
-            }, 4000);
+            }, 10000);
         }
 
         const BASE_URL = 'http://localhost:9001'

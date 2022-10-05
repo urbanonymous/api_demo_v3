@@ -21,17 +21,19 @@ class BinanceWSClient(object):
 
     async def listen(self):
         self._running = True
-        try:
-            async with websockets.connect(BINANCE_WS_API_URL) as connection:
-                self._connection = connection
-                while connection.open and self._running:
-                    async for message in connection:
-                        try:
-                            await self._handle_message(message)
-                        except Exception as e:
-                            logger.exception(e)
-        except Exception as e:
-            logger.exception(e)
+        while self._running:
+            # Handle possible websocket disconnect
+            try:
+                async with websockets.connect(BINANCE_WS_API_URL) as connection:
+                    self._connection = connection
+                    while connection.open and self._running:
+                        async for message in connection:
+                            try:
+                                await self._handle_message(message)
+                            except Exception as e:
+                                logger.exception(e)
+            except Exception as e:
+                logger.exception(e)
         logger.warning("BinanceWSClient is not listening anymore")
 
     async def subscribe(self, stream: str):
@@ -56,7 +58,7 @@ class BinanceWSClient(object):
             if not self._connection:
                 await asyncio.wait_for(self._check_connection(), timeout=3)
             await self._connection.send(message)
-            logger.debug(f">>> {message}")
+            logger.info(f">>> {message}")
         except Exception as e:
             logger.exception(e)
 

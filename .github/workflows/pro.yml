@@ -29,6 +29,8 @@ jobs:
 
       # Execute deploy script
       - name: Deploying environment
+        run: make deploy
         env:
           ENVIRONMENT: pro
-        run: make deploy
+          TESTNET_API_KEY: ${{ secrets.TESTNET_API_KEY }}
+          TESTNET_SECRET_KEY: ${{ secrets.TESTNET_SECRET_KEY }}

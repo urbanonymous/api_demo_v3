@@ -26,7 +26,7 @@ class WSManager:
             raise TypeError("data must be a dict")
 
         await websocket.send_json(data=data)
-        logger.info(f"Sent data to client >>> {data}")
+        logger.debug(f"Sent data to client >>> {data}")
 
     async def broadcast(self, data: dict):
         logger.debug(f"Broadcasting data to clients: {data}")

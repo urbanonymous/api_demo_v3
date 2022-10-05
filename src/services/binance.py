@@ -13,6 +13,7 @@ liquidity_engine = get_binance_liquidity_engine()
 
 logger = logging.getLogger(__name__)
 
+
 async def get_tickers():
     response = {}
     try:
@@ -20,6 +21,7 @@ async def get_tickers():
     except Exception:
         logger.error("Error getting tickers")
     return response
+
 
 async def get_balances():
     response = {}
@@ -29,6 +31,7 @@ async def get_balances():
     except Exception:
         logger.error("Error getting balances")
     return response
+
 
 async def enable_symbol_liquidity(symbol_id: SymbolId):
     await liquidity_engine.attach(symbol_id)
@@ -49,7 +52,6 @@ async def handle_ticker_event(event):
     }
     # Add the data to the liquidity engine prior to notifying the client with new data
     await liquidity_engine.update_symbol(data)
-
 
 
 events_map = {"24hrMiniTicker": handle_ticker_event}

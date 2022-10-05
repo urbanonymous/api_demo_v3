@@ -1,38 +1,50 @@
 # api_demo_v3
 
-Demo API + webapp, that provides liquidity to a Binance trading pair.
+This repo contains a webapp that provides liquidity to Binance trading pairs.
 
-It connects to Binance's API to gather information related to a trading pair.
+It connects to Binance's API to gather information related to some symbols, and then it creates buy and sell orders in the testnet of Binance based on some parameters.
 
-Then it creates buy and sell orders in the testnet of Binance to provide liquidity to the market.
+The web displays the current orders, ticker, balances from an account.
+The tickers are updated once those are activated (run button) up to 2 times per second.
 
-The portal displays the current orders, ticker, balances from an account.
+The data is updated using websockets, from the website to the internal API.
+Only tickers and orders are updated for not. The balances are only updated on refresh.
 
-The data is updated by websocket from the website to the internal API.
 The internal API is connected to Binance by websocket to get realtime price information.
+It subscribes to some market symbols and then ingests the newest price to an internal liquidity engine.
 
-The web is made with Tailwind CSS and daisyUI
+This liquidity engine basically checks if there are orders in place for a given symbol, if not, it creates a buy and sell order in the testnet of Binance.
+
+It also checks the trading pair price, and compares it to the orders places, to cancel and create new orders if necessary.
+
+All the pending orders for the trading pairs are cancelled/cleaned once the api is stopped and also on startup.
+
+The web is made with vanilla Javascript, Tailwind CSS and DaisyUI
 
 Internally, the API uses FastAPI, jinja2, websockets and aiohttp.
 
-When the API starts, it executes a cleanup, closing all the open orders in the testnet.
 
-The app is hardcoded to only use BTC, BUSD and USDT.
+The app is hardcoded to only use BTC, BUSD and USDT and the pairs BTCBUSD and BTCUSDT.
 
 ## TODO
 
-- Account balances updated using websocket
-- Orders status updated using websocket
+- Update account balances using websocket
+- Update orders status using websocket
+
 
 ## Improvements
 
 - Add OCO, Iceberg, Invisible and other order types
+- Add logic related to order size and balances
 - Allow configuration from the web
+- Initialize table of orders in frontend and only send updates instead of full table
+- Add a rebalance option for trading pair (mantain close to 50%/50% each asset)
+- Add tests...
 
 ## Notes related to Binance API
 
 - Some ENUM fields are not populated/documented
-- The testnet fails sometimes due to "-1007 timeouts" and 502 Bad Gateway, this seems to be due to the testnet resets every month. And this error appears during the deployment.
+- The testnet fails sometimes due to "-1007 timeouts" and 502 Bad Gateway, this seems to be caused by testnet resets/maintenance.
 
 
 ## Requirements
@@ -54,6 +66,10 @@ When attached:
 - To stop the api use `control+c`
 
 To just watch the logs without being attached use `make logs`
+
+The URL to view the web is `http://localhost:9001`
+
+You can also check the API openapi docs at `http://localhost:9001/docs/`
 
 To execute the tests use `make unit-test`
 

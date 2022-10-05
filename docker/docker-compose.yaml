@@ -17,7 +17,9 @@ services:
       HOST: 0.0.0.0
       PORT: 80
       ENVIRONMENT: ${ENVIRONMENT}
-      
+      TESTNET_API_KEY: ${TESTNET_API_KEY}
+      TESTNET_SECRET_KEY: ${TESTNET_SECRET_KEY}
+
     entrypoint: ["python", "-m", "src.main"]
 
   black:

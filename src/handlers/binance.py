@@ -35,11 +35,12 @@ async def generate_signature(data: dict) -> str:
 async def get_tickers(symbols: str):
     # Using str instead of list due python str(list) produces ilegal symbols for Binance API
     logger.info(f"Getting tickers for {symbols}")
-    
+
     async with aiohttp.ClientSession() as session:
         async with session.get(f"{BASE_API_URL}/ticker/price?symbols={symbols}") as response:
             data = await handle_response(response)
             return {symbol["symbol"]: round(float(symbol["price"]), 2) for symbol in data}
+
 
 async def create_order(order_data):
     logger.info(f"Creating order: {order_data}")
@@ -51,8 +52,8 @@ async def create_order(order_data):
 
 
 async def cancel_orders(symbol_id: str):
-    logger.indo(f"Cancelling all orders for {symbol_id}")
-    data = {"symbol": symbol_id.upper(), "timestamp": int(time.time() * 1000)}
+    logger.info(f"Cancelling all orders for {symbol_id}")
+    data = {"symbol": symbol_id.upper()}
     async with aiohttp.ClientSession() as session:
         async with session.delete(
             f"{BASE_TESTNET_API_URL}/openOrders", headers=HEADERS, data=await generate_signature(data)
