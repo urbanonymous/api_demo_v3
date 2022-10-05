@@ -45,10 +45,12 @@
 
                             <div class="stat">
                                 <div class="stat-title">BTCUSDT</div>
-                                <div id="btcusdt-ticker" class="stat-value"></div>
+                                <div id="btcusdt-ticker" class="stat-value">{{ tickers["BTCUSDT"] }}</div>
                                 <div class="stat-actions">
-                                    <button class="btn btn-sm btn-error">Clear</button>
-                                    <button class="btn btn-sm btn-info">Run</button>
+                                    <button class="btn btn-sm btn-error"
+                                        onclick="toogleSymbolLiquidity('BTCUSDT', false)">Clear</button>
+                                    <button class="btn btn-sm btn-info"
+                                        onclick="toogleSymbolLiquidity('BTCUSDT', true)">Run</button>
                                 </div>
                             </div>
 
@@ -57,10 +59,12 @@
 
                             <div class="stat">
                                 <div class="stat-title">BTCBUSD</div>
-                                <div id="btcbusd-ticker" class="stat-value"></div>
+                                <div id="btcbusd-ticker" class="stat-value">{{ tickers["BTCBUSD"] }}</div>
                                 <div class="stat-actions">
-                                    <button class="btn btn-sm btn-error">Clear</button>
-                                    <button class="btn btn-sm btn-info">Run</button>
+                                    <button class="btn btn-sm btn-error"
+                                        onclick="toogleSymbolLiquidity('BTCBUSD', false)">Clear</button>
+                                    <button class="btn btn-sm btn-info"
+                                        onclick="toogleSymbolLiquidity('BTCBUSD', true)">Run</button>
                                 </div>
                             </div>
 
@@ -134,7 +138,7 @@
         // TODO: Load the script from public folder
         function handle_event(event) {
             // Ugly code here, can be improve with a dict/map 
-            if (event.event_type == 'ticker'){
+            if (event.event_type == 'ticker') {
                 update_ticker(event)
             }
         }
@@ -174,16 +178,16 @@
             let { symbol_id, price } = event
             var target = false
             // Ugly code here :D
-            if (symbol_id == "BTCBUSD"){
+            if (symbol_id == "BTCBUSD") {
                 var target = "btcbusd-ticker"
-            } else if (symbol_id == "BTCUSDT"){
+            } else if (symbol_id == "BTCUSDT") {
                 var target = "btcusdt-ticker"
             }
 
-            if (target){
+            if (target) {
                 document.getElementById(target).innerHTML = (Math.round(parseFloat(price) * 100) / 100).toFixed(2)
             }
-            
+
         }
 
         function generateId() {
@@ -201,6 +205,22 @@
                 toast.removeChild(newAlert);
             }, 4000);
         }
+
+        const BASE_URL = 'http://localhost:9001'
+        function toogleSymbolLiquidity(symbol_id, state) {
+            let method = (state ? "POST" : "DELETE")
+            let req = new Request(`${BASE_URL}/symbol/${symbol_id}`, {
+                method: method,
+            });
+            fetch(req)
+                .then((response) => {
+                    console.log(response)
+                })
+                .catch((error) => {
+                    console.error('Error at fetch:', error)
+                });
+        }
+
     </script>
 </body>
 

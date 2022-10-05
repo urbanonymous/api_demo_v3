@@ -1,4 +1,5 @@
 import asyncio
+import time
 import logging
 from functools import lru_cache
 
@@ -6,18 +7,21 @@ from src.handlers.binance import cancel_orders, create_order
 from src.models.order import Order
 from src.models.symbol import SymbolId
 from src.settings import get_settings
+from src.utils.ws_manager import get_ws_manager
+
 
 BINANCE_WS_API_URL = "wss://stream.binance.com:9443/ws"
 
-
 logger = logging.getLogger(__name__)
+
 settings = get_settings()
+ws_manager = get_ws_manager()
 
 
 class BinanceLiquidityEngine(object):
-    VALID_SYMBOLS: list[str] = ["btcbusd", "btcusdt"]
-    SYMBOLS_ORDER_SIZE: dict = {"btcbusd": {"BUY": 0.01, "SELL": 100}, "btcusdt": {"BUY": 0.01, "SELL": 100}}
+    SYMBOLS_ORDER_SIZE: dict = {"BTCBUSD": {"BUY": 0.01, "SELL": 0.01}, "BTCUSDT": {"BUY": 0.01, "SELL": 100}}
     SPREAD: int = settings.liquidity_orders_spread
+    TICKS_PER_SECOND: int = settings.liquidity_max_ticks_per_second
 
     def __init__(self):
         self._client = None
@@ -43,6 +47,7 @@ class BinanceLiquidityEngine(object):
         logger.info("Stopped to provide liquidity for {symbol_id}")
 
     async def update_symbol(self, data: dict):
+        """Update symbol price in the class"""
         symbol = data["symbol_id"]
         if symbol not in self._symbols.keys():
             return
@@ -56,21 +61,39 @@ class BinanceLiquidityEngine(object):
     async def start(self):
         self._running = True
         while self._running:
-            for symbol_id, symbol_data in self._symbols.items():
+            symbols = {**self._symbols} # Copy dict as it might get updated
+            for symbol_id, symbol_data in symbols.items():
                 if not symbol_data["enabled"]:
                     continue
+
+                if not symbol_data["orders"]:
+                    try:
+                        await self._regenerate_liquidity(symbol_id)
+                    except Exception:
+                        logger.error("Error generating liquidity for {symbol_id}")
+                    continue
+
                 for order in symbol_data["orders"]:
                     conditions = (
                         order["side"] == "BUY" and order["price"] >= symbol_data["price"],
                         order["side"] == "SELL" and order["price"] <= symbol_data["price"],
                     )
                     if any(conditions):
-                        await self._regenerate_liquidity(symbol_id)
-                        break  # Ignore the rest of the orders of the symbol
+                        try:
+                            await self._regenerate_liquidity(symbol_id)
+                            break  # Ignore the rest of the orders of the symbol
+                        except Exception:
+                            logger.error(f"Error generating liquidity for {symbol_id}")
 
-            await asyncio.sleep(0.5)  # 2 ticks/s
+            await self._update_clients()
+            await asyncio.sleep(1/self.TICKS_PER_SECOND)  # MAX 2 ticks/s
+            logger.debug(f"Tick {time.time()}")
 
-    async def _regenerate_liquidity(self, symbol_id):
+    async def _check_price(self, symbol_id: SymbolId):
+        while not self._symbols[symbol_id]["price"]:
+            await asyncio.sleep(0.2)
+
+    async def _regenerate_liquidity(self, symbol_id: SymbolId):
         logger.info(f"Recreating orders to provide liquidity for {symbol_id}")
         self._symbols[symbol_id]["orders"] = []
         try:
@@ -78,31 +101,55 @@ class BinanceLiquidityEngine(object):
         except Exception:
             logger.warning("Couldn't cancel orders")
 
-        await create_order(
-            {
-                "symbol": symbol_id.upper(),
-                "side": "BUY",
-                "type": "LIMIT",
-                "price": float(self._symbols[symbol_id]["price"]) - settings.liquidity_orders_spread / 2,
-                "quantity": self.SYMBOLS_ORDER_SIZE[symbol_id]["BUY"],
-                "timeInForce": "GTC",
-            }
-        )
+        if not self._symbols[symbol_id]["price"]:
+            await asyncio.wait_for(self._check_price(symbol_id), timeout=5)
 
-        await create_order(
-            {
-                "symbol": symbol_id.upper(),
-                "side": "SELL",
-                "type": "LIMIT",
-                "price": float(self._symbols[symbol_id]["price"]) + settings.liquidity_orders_spread / 2,
-                "quantity": self.SYMBOLS_ORDER_SIZE[symbol_id]["SELL"],
-                "timeInForce": "GTC",
-            }
-        )
+        for side in ["BUY", "SELL"]:
+            side_modifier = -1 if side == "BUY" else 1
+            order = await create_order(
+                {
+                    "symbol": symbol_id.upper(),
+                    "side": side,
+                    "type": "LIMIT",
+                    "price": float(self._symbols[symbol_id]["price"])
+                    + (settings.liquidity_orders_spread / 2 * side_modifier),
+                    "quantity": self.SYMBOLS_ORDER_SIZE[symbol_id][side],
+                    "timeInForce": "GTC",
+                }
+            )
+            # Validate order data with Order pydantic model and transform it back to dict 
+            self._symbols[symbol_id]["orders"].append(dict(Order(**order)))
+
+        logger.info(f"Liquidity provided for {symbol_id}")
+
+    async def _update_clients(self):
+        events = []
+        symbols = {**self._symbols}
+        orders = []
+        for symbol_id, symbol_data in symbols.items():
+            # Add ticker event
+            events.append({
+                "event_type": "ticker",
+                "symbol_id": symbol_id,
+                "price": symbol_data["price"],
+            })
+            # Add orders data, transforming pydantic model to dict
+            orders += symbol_data["orders"]
+
+        # Add orders events
+        if orders:
+            events.append({
+                "event_type": "orders",
+                "orders": orders,
+            })
+        # TODO: group events and consume them in order at the frontend
+        for event in events:
+            asyncio.ensure_future(ws_manager.broadcast(event))
 
     async def stop(self):
         self._running = False
-        for symbol_id in self._symbols.keys():
+        symbols = [_ for _ in self._symbols.keys()] 
+        for symbol_id in symbols:
             try:
                 await cancel_orders(symbol_id)
             except Exception:

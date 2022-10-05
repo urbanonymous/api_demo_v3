@@ -32,34 +32,38 @@ async def generate_signature(data: dict) -> str:
     return data
 
 
-async def get_tickers(symbols: list):
-    """Does multiple calls due to aiohttp forced list params"""
-    data = []
+async def get_tickers(symbols: str):
+    # Using str instead of list due python str(list) produces ilegal symbols for Binance API
+    logger.info(f"Getting tickers for {symbols}")
+    
     async with aiohttp.ClientSession() as session:
-        for symbol in symbols:
-            async with session.get(f"{BASE_API_URL}/ticker/price?symbol={symbol}") as response:
-                data.append(await handle_response(response))
-    return data
-
+        async with session.get(f"{BASE_API_URL}/ticker/price?symbols={symbols}") as response:
+            data = await handle_response(response)
+            return {symbol["symbol"]: round(float(symbol["price"]), 2) for symbol in data}
 
 async def create_order(order_data):
+    logger.info(f"Creating order: {order_data}")
     async with aiohttp.ClientSession() as session:
         async with session.post(
-            f"{BASE_TESTNET_API_URL}/order", headers=HEADERS, data= await generate_signature(order_data)
+            f"{BASE_TESTNET_API_URL}/order", headers=HEADERS, data=await generate_signature(order_data)
         ) as response:
             return await handle_response(response)
 
 
 async def cancel_orders(symbol_id: str):
+    logger.indo(f"Cancelling all orders for {symbol_id}")
     data = {"symbol": symbol_id.upper(), "timestamp": int(time.time() * 1000)}
     async with aiohttp.ClientSession() as session:
-        async with session.delete(f"{BASE_TESTNET_API_URL}/openOrders", headers=HEADERS, data=await generate_signature(data)) as response:
+        async with session.delete(
+            f"{BASE_TESTNET_API_URL}/openOrders", headers=HEADERS, data=await generate_signature(data)
+        ) as response:
             return await handle_response(response)
 
 
 async def get_account():
+    logger.info("Getting account data")
     async with aiohttp.ClientSession() as session:
         async with session.get(
-            f"{BASE_TESTNET_API_URL}/account", headers=HEADERS, params= await generate_signature({})
+            f"{BASE_TESTNET_API_URL}/account", headers=HEADERS, params=await generate_signature({})
         ) as response:
             return await handle_response(response)

@@ -1,6 +1,6 @@
 from enum import Enum
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class Side(str, Enum):
@@ -9,10 +9,10 @@ class Side(str, Enum):
 
 
 class Order(BaseModel):
-    """The order data is simplified"""
+    """Order data simplified"""
 
-    symbol_id: str
-    price: float
+    symbol_id: str = Field(alias='symbol')
+    price: float 
     side: Side
-    order_id: str
-    order_type: str  # Binance API doesn't specify all enum types
+    order_id: str = Field(alias='orderId')
+    order_type: str  = Field(alias='type') # Binance API doesn't specify all types in the enum

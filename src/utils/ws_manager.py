@@ -29,7 +29,7 @@ class WSManager:
         logger.info(f"Sent data to client >>> {data}")
 
     async def broadcast(self, data: dict):
-        logger.info(f"Broadcasting data to clients:")
+        logger.debug(f"Broadcasting data to clients: {data}")
         for connection in self.active_connections:
             try:
                 await self.send_data(connection, data)

@@ -35,6 +35,7 @@ class BinanceWSClient(object):
         logger.warning("BinanceWSClient is not listening anymore")
 
     async def subscribe(self, stream: str):
+        logger.debug(f"Subscribing to {stream}")
         try:
             self._id += 1
             await self.send(json.dumps({"method": "SUBSCRIBE", "params": [stream], "id": self._id}))
@@ -42,25 +43,25 @@ class BinanceWSClient(object):
             logger.exception(e)
 
     async def unsubscribe(self, stream: str):
+        logger.debug(f"Unsubscribing to {stream}")
         self._id += 1
         await self.send(json.dumps({"method": "UNSUBSCRIBE", "params": [stream], "id": self._id}))
 
-
-    async def check_connection(self):
+    async def _check_connection(self):
         while not self._connection:
             await asyncio.sleep(0.2)
 
     async def send(self, message: str):
         try:
             if not self._connection:
-                await asyncio.wait_for(self.check_connection(), timeout=3)
+                await asyncio.wait_for(self._check_connection(), timeout=3)
             await self._connection.send(message)
-            logger.info(f">>> {message}")
+            logger.debug(f">>> {message}")
         except Exception as e:
             logger.exception(e)
 
     async def _handle_message(self, message: str):
-        logger.info(f"<<< {message}")
+        logger.debug(f"<<< {message}")
         try:
             # Ignore non json messages
             event = json.loads(message)

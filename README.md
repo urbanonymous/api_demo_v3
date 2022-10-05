@@ -21,8 +21,19 @@ The app is hardcoded to only use BTC, BUSD and USDT.
 
 ## TODO
 
-- Account balances updated by websocket
-- Orders status updated by websocket
+- Account balances updated using websocket
+- Orders status updated using websocket
+
+## Improvements
+
+- Add OCO, Iceberg, Invisible and other order types
+- Allow configuration from the web
+
+## Notes related to Binance API
+
+- Some ENUM fields are not populated/documented
+- The testnet fails sometimes due to "-1007 timeouts" and 502 Bad Gateway, this seems to be due to the testnet resets every month. And this error appears during the deployment.
+
 
 ## Requirements
 
