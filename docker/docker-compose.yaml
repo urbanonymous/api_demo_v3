@@ -21,6 +21,7 @@ services:
       ENVIRONMENT: ${ENVIRONMENT}
       TESTNET_API_KEY: ${TESTNET_API_KEY}
       TESTNET_SECRET_KEY: ${TESTNET_SECRET_KEY}
+      API_URL: "urbtools.com"
 
     entrypoint: ["python", "-m", "src.main"]
 

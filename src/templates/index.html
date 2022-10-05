@@ -151,7 +151,8 @@
         }
 
         window.addEventListener("DOMContentLoaded", () => {
-            var ws = new WebSocket("ws://localhost:9001/ws")
+            let url = {{ config.url }}
+            var ws = new WebSocket(`ws://${url}/ws`)
 
             ws.onmessage = function (event) {
                 try {
@@ -229,7 +230,7 @@
             }, 10000);
         }
 
-        const BASE_URL = 'http://localhost:9001'
+        const BASE_URL = {{ config.url }}
         function toogleSymbolLiquidity(symbol_id, state) {
             let method = (state ? "POST" : "DELETE")
             let req = new Request(`${BASE_URL}/symbol/${symbol_id}`, {

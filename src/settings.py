@@ -7,6 +7,7 @@ class Settings(BaseSettings):
     host: str
     port: int
 
+    api_url: str = "localhost:9001"
     liquidity_orders_spread: int = 10
     liquidity_max_ticks_per_second: int = 2
 
